@@ -3,6 +3,8 @@ If(!isset($_POST['id']) || !isset($_POST['key'])) {
   echo "invalid input";
   exit();
 }
+//session
+session_start();
 
 $id = $_POST['id'];
 $key = $_POST['key'];
@@ -59,3 +61,8 @@ $redis->quit;
 
 echo "welcome name:" . $db_nick . "<br>";
 echo "your token is " . $token;
+
+//record db_nick
+$_SESSION['player_name'] = $db_nick;
+//into gacha.html
+header('Location: gacha.php');
