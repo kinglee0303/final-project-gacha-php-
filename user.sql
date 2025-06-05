@@ -45,5 +45,4 @@ INSERT INTO tool (tool_name) VALUES
 ('金幣箱'), ('抽卡券'), ('神秘寶箱');
 
 --players
-INSERT INTO player (player_id, player_name, player_password, gacha_stone, player_money)
-VALUES ('00000001', 'TestPlayer', 'password1234', 100, 1000);
+INSERT INTO player (player_id, player_name, player_password, gacha_stone, player_money) VALUES ('00000001', 'TestPlayer', 'password1234', 100, 1000);

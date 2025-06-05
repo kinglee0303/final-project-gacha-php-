@@ -16,7 +16,7 @@ if(preg_match($pattern, $id) || preg_match($pattern, $key)) {
 }
 // must create new database,name: final_gacha
 // put github_sql content  in final_gacha
-$mysqli = new mysqli("localhost","zhouu","ispower","final_gacha");
+$mysqli = new mysqli("localhost","root","121314","phpmyadmin");
 if ($mysqli -> connect_errno) {
   echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
   exit();
@@ -64,5 +64,6 @@ echo "your token is " . $token;
 
 //record db_nick
 $_SESSION['player_name'] = $db_nick;
+$_SESSION['player_id'] = $db_id;
 //into gacha.html
 header('Location: gacha.php');
