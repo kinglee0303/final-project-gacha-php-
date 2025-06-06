@@ -67,7 +67,6 @@ if ($total_weight <= 0) {
 
 // 檢查保底，<=1表示最後一抽必須為5星
 $is_guaranteed = ($gacha_counter <= 1);
-
 if ($is_guaranteed) {
     $selected_star = $max_star;
     foreach ($roles as $r) {
@@ -104,25 +103,25 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param("si", $player_id, $selected_id);
 $stmt->execute();
 $stmt->store_result();
-
-if ($stmt->num_rows == 0) {
+$own_role = $stmt->num_rows;
+$stmt->close();
+// 判斷是否已有該角色
+if ($own_role == 0) {
     // 尚未擁有，新增角色
-    $stmt->close();
     $sql = "INSERT INTO player_role (player_id, role_id, owned, quantity) VALUES (?, ?, TRUE, 1)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("si", $player_id, $selected_id);
     $stmt->execute();
     
-    echo "This role does not exist, the backpack list has been updated.<br>";
+    //echo "This role does not exist, the backpack list has been updated.<br>";
 } else {
     // 已擁有，將 quantity 欄位 +1
-    $stmt->close();
     $sql = "UPDATE player_role SET quantity = quantity + 1 WHERE player_id = ? AND role_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("si", $player_id, $selected_id);
     $stmt->execute();
     
-    echo "This role does exist, the backpack list has been updated.<br>";
+    //echo "This role does exist, the backpack list has been updated.<br>";
 }
 
 //更新保底計數
@@ -133,12 +132,29 @@ $stmt->bind_param("is",$gacha_counter, $player_id);
 $stmt->execute();
 $stmt->close();
 
+// 最終回傳 JSON 結果
+$response = [
+    'success' => true,
+    'selected_id' => $selected_id,
+    'selected_name' => $selected_name,
+    'selected_star' => $selected_star,
+    'gacha_counter' => $gacha_counter,
+    'gacha_stone_before' => $gacha_stone,
+    'gacha_stone_after' => $gacha_stone-1,
+    'message_type' => ($is_guaranteed ? '保底出貨' : '一般抽卡'),
+    'message_counter' => "Just draw $gacha_counter more times to get a 5-star character.",
+    'message_own' => ($own_role==0 ? 'This role does not exist, the backpack list has been updated.' 
+                                    : 'his role does exist, the backpack list has been updated.')
+];
 
-echo "before : ". $gacha_stone. "<br>"; //
-echo "gacha $selected_id : $selected_name <br>";
-echo "gacha star = $selected_star <br>";
-echo "Just draw $gacha_counter more times to get a 5-star character.";
+//echo "before : ". $gacha_stone. "<br>"; //
+//echo "gacha $selected_id : $selected_name <br>";
+//echo "gacha star = $selected_star <br>";
+//echo "Just draw $gacha_counter more times to get a 5-star character.";
 $conn->close();
+echo "gacha ended<br>";
+//header('Content-Type: application/json; charset=utf-8');
+echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+exit;
 
-echo "gacha ended";
 ?>
