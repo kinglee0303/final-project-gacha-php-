@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['player_id'])) {
-    echo json_encode(['success' => false, 'message' => 'no login']); // 尚未登入
+    echo json_encode(['success' => false, 'message' => '尚未登入']); // 尚未登入
     exit;
 }
 
@@ -16,7 +16,7 @@ $dbname = "phpmyadmin";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
-    die(json_encode(['success' => false, 'message' => 'Database connection failed']));
+    die(json_encode(['success' => false, 'message' => '資料庫連接失敗']));
     exit;
 }
 
@@ -28,7 +28,7 @@ $stmt->execute();
 $result = $stmt->get_result();// 取得查詢結果物件
 $stmt->close();
 if ($result->num_rows === 0) {// 如果找不到任何資料（表示資料庫中沒有這個 player_id）
-    echo json_encode(['success' => false, 'message' => 'not found player']);
+    echo json_encode(['success' => false, 'message' => '沒有這名玩家']);
     exit;
 }
 
@@ -37,7 +37,7 @@ $gacha_stone = $row['gacha_stone'];
 $gacha_counter = $row['gacha_counter'];
 
 if ($gacha_stone <= 0) {
-    echo json_encode(['success' => false, 'message' => 'no gacha stone']);
+    echo json_encode(['success' => false, 'message' => '抽卡石不足']);
     exit;
 }
 
@@ -61,7 +61,7 @@ while ($r = $result->fetch_assoc()) {
 }
 //當你的資料表為空，$total_weight 會是 0
 if ($total_weight <= 0) {
-    echo json_encode(['success' => false, 'message' => 'Invalid total weight']);
+    echo json_encode(['success' => false, 'message' => '資料庫無卡牌']);
     exit;
 }
 
@@ -142,9 +142,10 @@ $response = [
     'gacha_stone_before' => $gacha_stone,
     'gacha_stone_after' => $gacha_stone-1,
     'message_type' => ($is_guaranteed ? '保底出貨' : '一般抽卡'),
-    'message_counter' => "Just draw $gacha_counter more times to get a 5-star character.",
-    'message_own' => ($own_role==0 ? 'This role does not exist, the backpack list has been updated.' 
-                                    : 'his role does exist, the backpack list has been updated.')
+    'message_counter' => "再$gacha_counter 抽即可獲得5星卡牌.",
+    'message_own' => ($own_role==0 ? '此角色未獲得，已更新背包.' 
+                                   : '此角色已獲得，已更新背包.'),
+    'message_result' => "恭喜抽中 $selected_name 卡牌，為 $selected_star 星級，目前抽卡石剩餘 " . ($gacha_stone-1)
 ];
 
 //echo "before : ". $gacha_stone. "<br>"; //
@@ -154,7 +155,7 @@ $response = [
 $conn->close();
 echo "gacha ended<br>";
 //header('Content-Type: application/json; charset=utf-8');
-echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+echo json_encode($response, JSON_UNESCAPED_UNICODE );
 exit;
 
 ?>
