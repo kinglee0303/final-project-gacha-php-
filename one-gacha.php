@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['player_id'])) {
-    echo json_encode(['success' => false, 'message' => '尚未登入']); // 尚未登入
+    echo json_encode(['success' => false, 'message' => '尚未登入'], JSON_UNESCAPED_UNICODE ); // 尚未登入
     exit;
 }
 
@@ -16,7 +16,7 @@ $dbname = "phpmyadmin";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
-    die(json_encode(['success' => false, 'message' => '資料庫連接失敗']));
+    die(json_encode(['success' => false, 'message' => '資料庫連接失敗'], JSON_UNESCAPED_UNICODE ));
     exit;
 }
 
@@ -28,7 +28,7 @@ $stmt->execute();
 $result = $stmt->get_result();// 取得查詢結果物件
 $stmt->close();
 if ($result->num_rows === 0) {// 如果找不到任何資料（表示資料庫中沒有這個 player_id）
-    echo json_encode(['success' => false, 'message' => '沒有這名玩家']);
+    echo json_encode(['success' => false, 'message' => '沒有這名玩家'], JSON_UNESCAPED_UNICODE );
     exit;
 }
 
@@ -37,7 +37,7 @@ $gacha_stone = $row['gacha_stone'];
 $gacha_counter = $row['gacha_counter'];
 
 if ($gacha_stone <= 0) {
-    echo json_encode(['success' => false, 'message' => '抽卡石不足']);
+    echo json_encode(['success' => false, 'message' => '抽卡石不足'], JSON_UNESCAPED_UNICODE );
     exit;
 }
 
@@ -61,7 +61,7 @@ while ($r = $result->fetch_assoc()) {
 }
 //當你的資料表為空，$total_weight 會是 0
 if ($total_weight <= 0) {
-    echo json_encode(['success' => false, 'message' => '資料庫無卡牌']);
+    echo json_encode(['success' => false, 'message' => '資料庫無卡牌'], JSON_UNESCAPED_UNICODE );
     exit;
 }
 

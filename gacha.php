@@ -19,9 +19,15 @@
         <button class="gacha-button" type="submit">ten gacha</button>
       </form>
 	    <br><br>
-	    <button class="bag-button" >BAG</button>
-	    <br><br>
-            <button class="store-button" >STORE</button>
+      <form action="role_backpack.php" method="post">
+	      <button class="bag-button" type="submit">ROLE BACKPACK</button>
+      </form>
+      <br><br>
+      <form action="tool_backpack.php" method="post">
+	      <button class="bag-button" type="submit">TOOL BACKPACK</button>
+      </form>
+      <br><br>
+      <button class="store-button" >STORE</button>
 
   </body>
 </html>
