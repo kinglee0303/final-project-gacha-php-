@@ -27,7 +27,9 @@
 	      <button class="bag-button" type="submit">TOOL BACKPACK</button>
       </form>
       <br><br>
-      <button class="store-button" >STORE</button>
+      <form action="store.php" method="post">
+      	      <button class="store-button" type="submit">STORE</button>
+      </form>
 
   </body>
 </html>
