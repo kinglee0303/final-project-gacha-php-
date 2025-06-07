@@ -1,13 +1,18 @@
 <html>
     <head>
-     <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=GedTewmwslZPUowlZS9sWJkPc3iw2lH1KHu_YsigfAPa3d6PsOtw_XwMMs_TepSKjXtdfAO-BKvy4EHwxK1H7zTBAk2wrfURperlCN-F6UHONscuXQ-C6lVpHTwfCPvJB4k6VNFdiV1ty5ZozFmDUDCWejMAs9rtmmViog6sOAachgg0Nv42JKH_45-hY2pp3pWur9zfo26qnxpChdX5_nsdKJV-fYnWDOsPyaaaAL0XqEU76c_r1qBLd2R6O8Pg4GAKP8Qite8FZt0JoJW_hw" charset="UTF-8"></script><style>
-	  /* 設定頁面背景色與文字顏色 */
-	  body {
-	    background-color: #f4f4f9;
-	    color: #333;
-	    font-family: Arial, sans-serif;
-	  }
+     <meta charset="UTF-8">
+     <title>Player Login</title>
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+     <style>
+	  /* 設定頁面背景色與文字顏色 */
+	body {
+            background-image: url('login_background.jpg');
+            background-size: cover;         /* 背景圖片填滿畫面 */
+            background-position: center;    /* 圖片置中 */
+            background-repeat: no-repeat;   /* 不重複鋪排 */
+          }
+	  
 	  /* 設定標題樣式 */
 	  h1 {
 	    text-align: center;
@@ -19,10 +24,10 @@
 	  /* 設定表單容器樣式 */
 	  form {
 	    width: 100%;
-	    max-width: 400px;
+	    max-width: 500px;
 	    margin: 0 auto;
 	    padding: 20px;
-	    background-color: #fff;
+	    background-color: rgba(255, 255, 255, 0.75);
 	    border-radius: 8px;
 	    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	  }
@@ -35,22 +40,24 @@
 	  /* 設定標籤樣式 */
 	  .form-group label {
             display: block;
-            width: 20%;
+            width: 25%;
+	    font-size:20px;
             text-align: center;
             margin-right: 10px;
 	    margin-bottom: 20px;
 	    font-weight: bold;
-	    color: #555;
+	    color: black;
 	  }
 	    /* 設定輸入框樣式 */
 	  .form-group input[type="text"] {
-	    width: 80%;
+	    width: 75%;
+	    height: 50px;
 	    padding: 15px;
 	    margin-bottom: 20px;
 	    border: 1px solid #ccc;
 	    border-radius: 4px;
 	    box-sizing: border-box;
-	    font-size: 1em;
+	    font-size: 2em;
 	  }
 	 /* 設定提交按鈕樣式 */
 	  input[type="submit"] {
@@ -61,7 +68,7 @@
 	    border: none;
 	    border-radius: 4px;
 	    cursor: pointer;
-	    font-size: 1.2em;
+	    font-size: 1.5em;
 	    transition: background-color 0.3s ease;
 	  }
 
@@ -69,21 +76,54 @@
 	  input[type="submit"]:hover {
 	    background-color: #116fb5
 	  }
+	  .right-small-text {
+	    display: block;         /* 讓文字可以靠左對齊 */
+	    text-align: right;       
+	    font-size: 20px;        /* 字體縮小 */
+	    margin-left: 10px;      /* （可選）加點左邊距離讓它更清楚 */
+	    margin-top: 10px;
+	  }
+
      </style>
     </head>
     <body>
-     <br><br>
-     <form action="/login.php" method="post" style="text-align:center">
-	  <h1>player</h1>
+
+     <br><br><br><br>
+     <form action="login.php" method="post" style="text-align:center">
+	<h1>player</h1>
         <div class="form-group">
 	    <label>id</label>
-            <input type="text" name="id"><br><br>
+            <input type="text" name="id"required><br><br>
         </div>
         <div class="form-group">
-            <label>password</label>
-            <input type="text" name="key"><br><br>
+            <label>Password</label>
+            <input type="text" name="key" required><br><br>
         </div>
-        <input type="submit" value="Login">
-     </form>
+        <input  type="submit" value="Login">
+	<br>
+        <a href="sign_up.html" class="right-small-text">
+            Sign Up
+    	</a>
+	<br><br>
+	</form>
+	<script>
+	  window.onload = function () {
+	    const inputs = document.querySelectorAll('input[type="text"], input[type="password"]');
+	    inputs.forEach(input => input.value = '');
+	  };
+	  // 顯示註冊成功訊息
+	  const urlParams = new URLSearchParams(window.location.search);
+	    if (urlParams.get('msg') === 'Registration Successful') {
+	      Swal.fire({
+	       icon: 'success',
+	       title: '註冊成功！',
+	       text: '請登入以繼續。',
+	       confirmButtonText: '好',
+	      });
+		const newURL = window.location.origin + window.location.pathname;
+    		window.history.replaceState({}, document.title, newURL);
+	    }
+	</script>
+
     </body>
 </html>
