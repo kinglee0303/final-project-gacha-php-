@@ -11,7 +11,8 @@ $key = $_POST['key'];
 $pattern="/[^a-zA-Z0-9]+/";
 
 if(preg_match($pattern, $id) || preg_match($pattern, $key)) {
-  echo "not allowed input";
+  //echo "not allowed input";
+  header("Location: login.html?msg=not allowed input");
   exit();
 }
 // must create new database,name: final_gacha
@@ -37,13 +38,15 @@ if ($result = $mysqli -> query($sql_str)) {
   $db_money = $row['player_money'];
   $result -> free_result();
 } else {
-  echo "Login Failed1";
+  echo "Login Failed1_SQL語法或查詢錯誤";
   exit();
 }
 $mysqli -> close();
 
 if(!($id==$db_id && $key==$db_key)) {
-  echo "Login Failed2";
+  echo "Login Failed2_查詢成功但帳密不符";
+  header("Location: login.html?message=" . urlencode("登入失敗，請再試一次"));
+
   exit();
 }
 
