@@ -30,6 +30,8 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	  }
 	.center-wrapper {
+	  margin-top: 5vh;
+          margin-left: 5vh;	
 	  display: flex;
 	  justify-content: center;   /* 水平置中 */
 	  align-items: center;       /* 垂直置中 */
