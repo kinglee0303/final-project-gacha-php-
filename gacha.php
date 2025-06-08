@@ -22,14 +22,20 @@
 	    background-position: center;    /* 圖片置中 */
 	    background-repeat: no-repeat;   /* 不重複鋪排 */
 	  }
-	  .box {   
-		 min-height: 80vh;
+	  .box { 
+	    min-height: 60vh;
             text-align: center;
             background-color: rgba(255, 255, 255, 0.40); /* 白色 + 50% 不透明度 */
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-           }
-
+	  }
+	.center-wrapper {
+	  display: flex;
+	  justify-content: center;   /* 水平置中 */
+	  align-items: center;       /* 垂直置中 */
+	  height: 70vh;             /* 整個視窗高度 */
+	  width: 80vh;
+	}
 	img {
 	    display: block;
 	    margin: 0 auto;
@@ -180,7 +186,7 @@
                          </form>
 
 	    	</div>
-	 	<div>
+	 	<div  class="center-wrapper">
 	   	     <div class="box">
 	    		<br><br><br>
 	    		<div class="title-row">
@@ -198,7 +204,7 @@
 	            		</form>
 				<br><br>
 			</div>
-		   </div
+		   </div>
 		</div>
 	   </div>
 <?php if (isset($_SESSION['gacha_result'])): ?>
@@ -274,6 +280,7 @@
 	    <tr>
 	      <th>角色ID</th>
 	      <th>角色名稱</th>
+	      <th>星級</th>
 	      <th>數量</th>
 	    </tr>
 	  </thead>
@@ -283,6 +290,7 @@
 	    <tr>
 	      <td>${role.role_id}</td>
 	      <td>${role.role_name}</td>
+	      <td>${role.star}</td>
 	      <td>${role.quantity}</td>
 	    </tr>`;
 	});
