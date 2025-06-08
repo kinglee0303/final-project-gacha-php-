@@ -7,6 +7,9 @@
      <style>
 	  /* 設定頁面背景色與文字顏色 */
 	body {
+	    height: 100%;
+            min-height: 100vh;
+
             background-image: url('login_background.jpg');
             background-size: cover;         /* 背景圖片填滿畫面 */
             background-position: center;    /* 圖片置中 */
@@ -81,13 +84,19 @@
 	    text-align: right;       
 	    font-size: 20px;        /* 字體縮小 */
 	    margin-left: 10px;      /* （可選）加點左邊距離讓它更清楚 */
-	    margin-top: 10px;
-	  }
+	    margin-top: 20px;
+	 }
+	.center-wrapper {
+	  display: flex;
+	  justify-content: center;   /* 水平置中 */
+	  align-items: center;       /* 垂直置中 */
+	  height: 70vh;             /* 佔滿整個視窗高度 */
+	}
 
      </style>
     </head>
     <body>
-
+     <div class="center-wrapper">
      <br><br><br><br>
      <form action="login.php" method="post" style="text-align:center">
 	<h1>player</h1>
@@ -104,8 +113,9 @@
         <a href="sign_up.html" class="right-small-text">
             Sign Up
     	</a>
-	<br><br>
+	<br>
 	</form>
+ </div>
 	<script>
 	  window.onload = function () {
 	    const inputs = document.querySelectorAll('input[type="text"], input[type="password"]');
