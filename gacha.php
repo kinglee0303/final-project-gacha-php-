@@ -184,7 +184,7 @@
 	   	     <div class="box">
 	    		<br><br><br>
 	    		<div class="title-row">
-	    			<h1 class="cyber-title" >轉 蛋</h1>
+	    			<h1 class="cyber-title" >抽 卡</h1><br>
 	    		</div>
 	    		<img src="box_gacha.png" alt="gacha">
 	    		<br><br><br>
