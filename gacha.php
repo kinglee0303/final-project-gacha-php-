@@ -168,11 +168,11 @@
 	       		<h1 class="money">&nbsp;&nbsp;&nbsp;&nbsp;金幣：<?= htmlspecialchars($money); ?></h1>
 			<br>
 			<form action="role_backpack.php" method="post">
-                                <button class="bag-button" type="submit">ROLE BACKPACK</button>
+                                <button class="bag-button" type="submit"> 角色背包 </button>
                         </form>
                         <br><br>
                         <form action="tool_backpack.php" method="post">
-                                <button class="bag-button" type="submit">TOOL BACKPACK</button>
+                                <button class="bag-button" type="submit"> 道具背包 </button>
                          </form>
                         <br><br>
                         <form action="store.php" method="post">
@@ -184,7 +184,7 @@
 	   	     <div class="box">
 	    		<br><br><br>
 	    		<div class="title-row">
-	    			<h1 class="cyber-title" >抽 卡</h1><br>
+	    			<h1 class="cyber-title" >抽 卡</h1>
 	    		</div>
 	    		<img src="box_gacha.png" alt="gacha">
 	    		<br><br><br>
@@ -192,7 +192,7 @@
 			        <form id="one-gacha-form" action="one-gacha.php" method="post">
                                         <button class="gacha-button" type="submit">one gacha</button>
                                 </form>
-				<br><br><br>
+				<br><br>
 	            		<form id="ten-gacha-form" action="ten-gacha.php" method="post">
 	             		 	<button class="gacha-button" type="submit">ten gacha</button>
 	            		</form>
@@ -203,7 +203,6 @@
 	   </div>
 <?php if (isset($_SESSION['gacha_result'])): ?>
     <script>
-
         const result = <?php echo json_encode($_SESSION['gacha_result'], JSON_UNESCAPED_UNICODE); ?>;
 	const gacha_t = <?php echo json_encode($_SESSION['gacha_t'], JSON_UNESCAPED_UNICODE); ?>;
 	const message_f = result.message_result;
@@ -266,8 +265,58 @@
     </script>
     <?php unset($_SESSION['gacha_result']); ?>
     <?php unset($_SESSION['gacha_t']); ?>
-
 <?php endif; ?>
+<?php if (isset($_SESSION['player_role'])): ?>
+    <script>
+	const roles = <?php echo json_encode($_SESSION['player_role'], JSON_UNESCAPED_UNICODE); ?>;
+	let tableHTML = `<table border="1" style="border-collapse: collapse; width: 100%; text-align: center;">
+	  <thead>
+	    <tr>
+	      <th>角色ID</th>
+	      <th>角色名稱</th>
+	      <th>數量</th>
+	    </tr>
+	  </thead>
+	  <tbody>`;
+	roles.forEach(role => {
+	  tableHTML += `
+	    <tr>
+	      <td>${role.role_id}</td>
+	      <td>${role.role_name}</td>
+	      <td>${role.quantity}</td>
+	    </tr>`;
+	});
+	tableHTML += `</tbody></table>`;
+	Swal.fire({ html: tableHTML })
+    </script>
+    <?php unset($_SESSION['player_role']); ?>
+<?php endif; ?>
+<?php if (isset($_SESSION['player_tool'])): ?>
+    <script>
+        const tools = <?php echo json_encode($_SESSION['player_tool'], JSON_UNESCAPED_UNICODE); ?>;
+        let tableHTML = `<table border="1" style="border-collapse: collapse; width: 100%; text-align: center;">
+          <thead>
+            <tr>
+              <th>道具ID</th>
+              <th>道具名稱</th>
+              <th>數量</th>
+            </tr>
+          </thead>
+          <tbody>`;
+        tools.forEach(tool => {
+          tableHTML += `
+            <tr>
+              <td>${tool.tool_id}</td>
+              <td>${tool.tool_name}</td>
+              <td>${tool.quantity}</td>
+            </tr>`;
+        });
+        tableHTML += `</tbody></table>`;
+        Swal.fire({ html: tableHTML })
+    </script>
+    <?php unset($_SESSION['player_tool']); ?>
+<?php endif; ?>
+
 
   </body>
 </html>
