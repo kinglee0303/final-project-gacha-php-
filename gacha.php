@@ -31,7 +31,7 @@
 	  }
 	.center-wrapper {
 	  margin-top: 5vh;
-          margin-left: 5vh;	
+          margin-left: 0vh;	
 	  display: flex;
 	  justify-content: center;   /* 水平置中 */
 	  align-items: center;       /* 垂直置中 */
