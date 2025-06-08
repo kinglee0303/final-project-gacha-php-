@@ -109,7 +109,7 @@
          const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('msg') === 'not allowed input') {
               Swal.fire({
-               icon: 'failed',
+               icon: 'error',
                title: '註冊失敗！',
                text: 'Name/ID/Password 僅可輸入英文或數字。',
                confirmButtonText: '好',
@@ -119,7 +119,7 @@
             }
             if (urlParams.get('msg') === 'duplicate_id') {
               Swal.fire({
-               icon: 'failed',
+               icon: 'error',
                title: '註冊失敗！',
                text: 'ID與其他player資料重覆,請更換資料。',
                confirmButtonText: '好',
@@ -129,7 +129,7 @@
             }
 	    if (urlParams.get('msg') === 'duplicate_name') {
               Swal.fire({
-               icon: 'failed',
+               icon: 'error',
                title: '註冊失敗！',
                text: 'Name與其他player資料重覆,請更換資料。',
                confirmButtonText: '好',
