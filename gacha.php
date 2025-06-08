@@ -61,7 +61,7 @@
   	    transform: scale(0.98);
 	    background-color: #0d5e94;
 	 }
-    	  .gacha-button1, .gacha-button2 {
+    	  .gacha-button {
 		border-radius: 15px;
 
 	 }
@@ -181,7 +181,7 @@
 
 	    	</div>
 	 	<div>
-	   	   <form class="box">
+	   	     <div class="box">
 	    		<br><br><br>
 	    		<div class="title-row">
 	    			<h1 class="cyber-title" >轉 蛋</h1>
@@ -189,20 +189,23 @@
 	    		<img src="box_gacha.png" alt="gacha">
 	    		<br><br><br>
 			<div class="gacha-container">
-		    		<form action="one-gacha.php" method="post">
-	              			<button class="gacha-button1" type="submit">one gacha</button>
-	           		</form>
+			        <form id="one-gacha-form" action="one-gacha.php" method="post">
+                                        <button class="gacha-button" type="submit">one gacha</button>
+                                </form>
 				<br><br><br>
-	            		<form action="ten-gacha.php" method="post">
-	             		 	<button class="gacha-button2" type="submit">ten gacha</button>
+	            		<form id="ten-gacha-form" action="ten-gacha.php" method="post">
+	             		 	<button class="gacha-button" type="submit">ten gacha</button>
 	            		</form>
+				<br><br>
 			</div>
-		   </form>
+		   </div
 		</div>
 	   </div>
 <?php if (isset($_SESSION['gacha_result'])): ?>
     <script>
+
         const result = <?php echo json_encode($_SESSION['gacha_result'], JSON_UNESCAPED_UNICODE); ?>;
+	const gacha_t = <?php echo json_encode($_SESSION['gacha_t'], JSON_UNESCAPED_UNICODE); ?>;
 	const message_f = result.message_result;
 	const match = '恭喜抽中以下卡片,'+message_f.match(/目前抽卡石剩餘\s*\d+/);
 	if (match) {
@@ -210,16 +213,41 @@
 	} else {
 	  console.log("沒找到句子");
 	}
-        //let message = `<p>${result.message_result}</p>`;
-        let message = `<p>${match}</p>`;
-	message += `<p>${result.message_counter}</p>`;
-        message += `<p>${result.message_own}</p>`;
-        message += `<ul>`;
-        for (let i = 0; i < result.selected_name.length; i++) {
-            message += `<li>${result.selected_name[i]} - ${result.selected_star[i]}⭐</li>`;
-        }
-        message += `</ul>`;
+	let message = '';
+	if(gacha_t==10){
+	        //let message = `<p>${result.message_result}</p>`;
+	        message = `<p>${match}</p>`;
+		message += `<p>${result.message_counter}</p>`;
+	        //message += `<p>${result.message_own}</p>`;
+		// 統計卡片名稱與出現次數
+		const cardCountMap = {};
 
+		for (let i = 0; i < result.selected_name.length; i++) {
+		    const name = result.selected_name[i];
+		    const star = result.selected_star[i];
+		    const key = `${name}-${star}`;
+		    
+		    if (!cardCountMap[key]) {
+		        cardCountMap[key] = { name, star, count: 1 };
+		    } else {
+		        cardCountMap[key].count++;
+		    }
+		}
+	        //message += `<ul>`;
+	        for (const key in cardCountMap) {
+		    const card = cardCountMap[key];
+		    message += `<p>${card.name} - ${card.star}⭐ * ${card.count}</p>`;
+		}
+	        //message += `</ul>`;
+	}
+	else if (gacha_t==1)
+	{
+		message = `<p>${match}</p>`;
+	 	message += `<p>${result.message_counter}</p>`;
+	        //message += `<p>${result.message_own}</p>`;
+		message += `<p>${result.selected_name} - ${result.selected_star}⭐ * 1 </p>`;
+
+	}
         Swal.fire({
             icon: 'success',
             title: '🎉 抽卡結果！',
@@ -237,6 +265,8 @@
         window.history.replaceState({}, document.title, newURL);
     </script>
     <?php unset($_SESSION['gacha_result']); ?>
+    <?php unset($_SESSION['gacha_t']); ?>
+
 <?php endif; ?>
 
   </body>
