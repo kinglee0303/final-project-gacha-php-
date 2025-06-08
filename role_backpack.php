@@ -58,4 +58,9 @@ echo json_encode([
     'player_id' => $player_id,
     'roles' => $roles
 ], JSON_UNESCAPED_UNICODE );
+
+//傳遞回應至gacha.php顯示
+$_SESSION['player_role']=$roles;
+header("Location: gacha.php");
+
 ?>
