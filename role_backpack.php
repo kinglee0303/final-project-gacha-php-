@@ -32,25 +32,31 @@ if ($result_bag->num_rows === 0) {// 如果找不到任何資料（表示資料�
     exit;
 }
 $stmt->close();
-$sql = "SELECT role_id, role_name FROM role";
+$sql = "SELECT role_id, role_name, star FROM role";
 $result_menu = $conn->query($sql);
 
 // 將查詢結果存入陣列
 $roles_menu = [];
 while ($row = $result_menu->fetch_assoc()) {
-    $roles_menu[$row['role_id']] = $row['role_name'];
+    $roles_menu[$row['role_id']] = [
+        'role_name' => $row['role_name'],
+        'star' => $row['star']
+    ];
 }
 
 
 // 將查詢結果存入陣列
 $roles = [];
 while ($row = $result_bag->fetch_assoc()) {
+    $role_id = $row['role_id'];
     $roles[] = [
-        'role_id' => $row['role_id'],
-        'role_name' => $roles_menu[$row['role_id']],
-        'quantity' => $row['quantity']
+      'role_id' => $role_id,
+      'role_name' => $roles_menu[$role_id]['role_name'],
+      'quantity' => $row['quantity'],
+      'star' => $roles_menu[$role_id]['star']
     ];
 }
+
 $conn->close();
 // 輸出 JSON 格式的背包資料
 echo json_encode([
