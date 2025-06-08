@@ -33,6 +33,8 @@ if ($result = $mysqli -> query($sql_str)) {
   $db_id = $row['player_id'];
   $db_key = $row['player_password'];
   $db_nick = $row['player_name'];
+  $db_stone = $row['gacha_stone'];
+  $db_money = $row['player_money'];
   $result -> free_result();
 } else {
   echo "Login Failed1";
@@ -65,5 +67,7 @@ echo "your token is " . $token;
 //record db_nick
 $_SESSION['player_name'] = $db_nick;
 $_SESSION['player_id'] = $db_id;
+$_SESSION['player_stone'] = $db_stone;
+$_SESSION['player_money'] = $db_money;
 //into gacha.html
 header('Location: gacha.php');
