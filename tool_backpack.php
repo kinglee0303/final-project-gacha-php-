@@ -58,4 +58,8 @@ echo json_encode([
     'player_id' => $player_id,
     'tools' => $tools
 ], JSON_UNESCAPED_UNICODE );
+
+$_SESSION['player_tool']=$tools;
+header("Location: gacha.php");
+
 ?>
