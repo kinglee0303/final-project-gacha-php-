@@ -92,7 +92,7 @@
      <form action="login.php" method="post" style="text-align:center">
 	<h1>player</h1>
         <div class="form-group">
-	    <label>id</label>
+	    <label>ID</label>
             <input type="text" name="id"required><br><br>
         </div>
         <div class="form-group">
@@ -122,6 +122,29 @@
 	      });
 		const newURL = window.location.origin + window.location.pathname;
     		window.history.replaceState({}, document.title, newURL);
+	    }
+	    else if (urlParams.get('msg') === 'not allowed input'){
+	       Swal.fire({
+                 icon: 'error',
+                 title: '登錄失敗！',
+                 text: 'ID/Password 僅可輸入英文或數字。',
+                 confirmButtonText: '好',
+               });
+                const newURL = window.location.origin + window.location.pathname;
+                window.history.replaceState({}, document.title, newURL);
+
+	    }
+	    const params = new URLSearchParams(window.location.search);
+	    const message = params.get("message");
+	    if (message=='登入失敗，請再試一次') {
+	               Swal.fire({
+	               icon: 'error',
+	               title: '登入失敗！',
+	               text: '帳號或密碼錯誤,請重試。',
+	               confirmButtonText: '好',
+	              });
+	                const newURL = window.location.origin + window.location.pathname;
+	                window.history.replaceState({}, document.title, newURL);
 	    }
 	</script>
 
