@@ -144,7 +144,7 @@ $response = [
     'gacha_stone_before' => $gacha_stone,
     'gacha_stone_after' => $gacha_stone-10,
     'message_type' => ($is_guaranteed ? '保底出貨' : '一般抽卡'),
-    'message_counter' => "再$gacha_counter 抽即可獲得5星卡牌.",
+    'message_counter' => "再 $gacha_counter 抽即可獲得5星卡牌.",
     'message_own' => '已更新背包.',
     'message_result' => "恭喜抽中 $selected_name 卡牌，為 $selected_star 星級，目前抽卡石剩餘 " . ($gacha_stone-10)
 ];
