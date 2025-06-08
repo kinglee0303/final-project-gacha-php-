@@ -157,6 +157,7 @@ echo json_encode($response, JSON_UNESCAPED_UNICODE );
 //將response傳回去gacha顯示
 $_SESSION['player_stone'] = $gacha_stone-10;
 $_SESSION['gacha_result'] = $response;
+$_SESSION['gacha_t']=1;
 header("Location: gacha.php");
 
 exit;
