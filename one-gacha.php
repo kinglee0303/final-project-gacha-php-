@@ -142,7 +142,7 @@ $response = [
     'gacha_stone_before' => $gacha_stone,
     'gacha_stone_after' => $gacha_stone-1,
     'message_type' => ($is_guaranteed ? '保底出貨' : '一般抽卡'),
-    'message_counter' => "再$gacha_counter 抽即可獲得5星卡牌.",
+    'message_counter' => "再 $gacha_counter 抽即可獲得5星卡牌.",
     'message_own' => ($own_role==0 ? '此角色未獲得，已更新背包.' 
                                    : '此角色已獲得，已更新背包.'),
     'message_result' => "恭喜抽中 $selected_name 卡牌，為 $selected_star 星級，目前抽卡石剩餘 " . ($gacha_stone-1)
@@ -156,6 +156,14 @@ $conn->close();
 echo "gacha ended<br>";
 //header('Content-Type: application/json; charset=utf-8');
 echo json_encode($response, JSON_UNESCAPED_UNICODE );
+
+//將response傳回去gacha顯示
+$_SESSION['player_stone'] = $gacha_stone-1;
+$_SESSION['gacha_result'] = $response;
+$_SESSION['gacha_t']=1;
+header("Location: gacha.php");
+
+
 exit;
 
 ?>
