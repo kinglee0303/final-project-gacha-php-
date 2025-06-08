@@ -111,8 +111,7 @@
 	@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
 
 	.cyber-title {
-	  font-size: 15 em;
-	  font-weight: 600;
+	  font-size: 4.0em;	 
 	  text-align: center;
 	  font-family: 'Orbitron', sans-serif;
 	  color: #4b0082; /* 主紫色 */
@@ -122,7 +121,6 @@
 	    0 0 9px #107aea;
 	  letter-spacing: 2px;
 	  margin-bottom: 2px;
-	   font-size: 2.5em;
   	  color: transparent;
   	  -webkit-text-stroke: 1px #7e22ce;
 
@@ -165,7 +163,7 @@
   <body>
 	   
 	    <div class="top-bar">
-	    	<h1 class="player">welcome player: <?= htmlspecialchars($user); ?>&nbsp;</h1>
+	    	<h1 class="player">Welcome Player: <?= htmlspecialchars($user); ?>&nbsp;</h1>
 	    	<a href="login.html" class="logout">登出</a>
 	    </div>
 	    <div class="inf">
@@ -188,10 +186,10 @@
 	    	</div>
 	 	<div  class="center-wrapper">
 	   	     <div class="box">
-	    		<br><br><br>
+	    		<br>
 	    		<div class="title-row">
 	    			<h1 class="cyber-title" >抽 卡</h1>
-	    		</div>
+	    		</div><br><br>
 	    		<img src="box_gacha.png" alt="gacha">
 	    		<br><br><br>
 			<div class="gacha-container">
@@ -203,6 +201,10 @@
 	             		 	<button class="gacha-button" type="submit">ten gacha</button>
 	            		</form>
 				<br><br>
+				<form id="gacha_all" action="gacha_all.php" method="post">
+                                        <button class="gacha-button" type="submit">抽卡圖鑑</button>
+                                </form>
+                                <br><br>
 			</div>
 		   </div>
 		</div>
@@ -275,6 +277,7 @@
 <?php if (isset($_SESSION['player_role'])): ?>
     <script>
 	const roles = <?php echo json_encode($_SESSION['player_role'], JSON_UNESCAPED_UNICODE); ?>;
+	let titleHTML = `<h1 style="border-collapse: collapse; width: 100%; text-align: center;">我的角色背包</h1>`
 	let tableHTML = `<table border="1" style="border-collapse: collapse; width: 100%; text-align: center;">
 	  <thead>
 	    <tr>
@@ -295,13 +298,14 @@
 	    </tr>`;
 	});
 	tableHTML += `</tbody></table>`;
-	Swal.fire({ html: tableHTML })
+	Swal.fire({ html: titleHTML+tableHTML })
     </script>
     <?php unset($_SESSION['player_role']); ?>
 <?php endif; ?>
 <?php if (isset($_SESSION['player_tool'])): ?>
     <script>
         const tools = <?php echo json_encode($_SESSION['player_tool'], JSON_UNESCAPED_UNICODE); ?>;
+	let titleHTML = `<h1 style="border-collapse: collapse; width: 100%; text-align: center;">我的道具背包</h1>`
         let tableHTML = `<table border="1" style="border-collapse: collapse; width: 100%; text-align: center;">
           <thead>
             <tr>
@@ -320,10 +324,41 @@
             </tr>`;
         });
         tableHTML += `</tbody></table>`;
-        Swal.fire({ html: tableHTML })
+        Swal.fire({ html: titleHTML+tableHTML })
     </script>
     <?php unset($_SESSION['player_tool']); ?>
 <?php endif; ?>
+<?php if (isset($_SESSION['role_all'])): ?>
+    <script>
+        const roles = <?php echo json_encode($_SESSION['role_all'], JSON_UNESCAPED_UNICODE); ?>;
+        let titleHTML = `<h1 style="border-collapse: collapse; width: 100%; text-align: center;">抽卡圖鑑</h1>`
+        let tableHTML = `<table border="1" style="border-collapse: collapse; width: 100%; text-align: center;">
+          <thead>
+            <tr>
+              <th>角色ID</th>
+              <th>角色名稱</th>
+	      <th>星級</th>
+              <th>抽中機率</th>
+            </tr>
+          </thead>
+          <tbody>`;
+        roles.forEach(role => {
+	let percent = ((role.role_weight / 152) * 100).toFixed(2);
+
+          tableHTML += `
+            <tr>
+              <td>${role.role_id}</td>
+              <td>${role.role_name}</td>
+              <td>${role.star}</td>
+	      <td>${role.role_weight}/152（約 ${percent}%）</td>
+            </tr>`;
+        });
+        tableHTML += `</tbody></table>`;
+        Swal.fire({ html: titleHTML+tableHTML })
+    </script>
+     <?php unset($_SESSION['role_all']); ?>
+<?php endif; ?>
+
 
 
   </body>
