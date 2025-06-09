@@ -9,7 +9,6 @@
    body {
 	height: 100%;
         min-height: 100vh;
-
 	background-image: url('login_background.jpg');
         background-size: cover;         /* 背景圖片填滿畫面 */
         background-position: center;    /* 圖片置中 */
@@ -101,7 +100,19 @@
 	    height: 60vh;             /* 佔滿整個視窗高度 */
 	    margin: 0 auto;
 	 }
+	.swal-popup {
+          font-size: 18px; /* 整體字體大小 */
+	  width: auto !important;
+  	  max-width: none;
+        }
 
+        .swal-title {
+          font-size: 33px; /* 標題字體大小 */
+        }
+
+        .swal-text {
+          font-size: 25px; /* 這就是 text 的字體大小 */
+        }
   </style>
   </head>
   <body>
@@ -110,7 +121,7 @@
 	<button class="back" type="button" onclick="location.href='login.html'">返回上一頁</button>
 	</div>
 	<div class="center-wrapper">
-	<br><br><br><br><
+	<br><br><br><br>
 	
 	  <form action="sign_up.php" method="POST">
 	    <h1>Player Registration</h1>
@@ -144,6 +155,11 @@
                title: '註冊失敗！',
                text: 'Name/ID/Password 僅可輸入英文或數字。',
                confirmButtonText: '好',
+                  customClass: {
+                            popup: 'swal-popup',
+                            title: 'swal-title',
+                            htmlContainer: 'swal-text'
+                          }
               });
                 const newURL = window.location.origin + window.location.pathname;
                 window.history.replaceState({}, document.title, newURL);
@@ -154,6 +170,11 @@
                title: '註冊失敗！',
                text: 'ID與其他player資料重覆,請更換資料。',
                confirmButtonText: '好',
+                  customClass: {
+                            popup: 'swal-popup',
+                            title: 'swal-title',
+                            htmlContainer: 'swal-text'
+                          }
               });
                 const newURL = window.location.origin + window.location.pathname;
                 window.history.replaceState({}, document.title, newURL);
@@ -164,10 +185,17 @@
                title: '註冊失敗！',
                text: 'Name與其他player資料重覆,請更換資料。',
                confirmButtonText: '好',
+                  customClass: {
+                            popup: 'swal-popup',
+                            title: 'swal-title',
+                            htmlContainer: 'swal-text'
+                          }
               });
                 const newURL = window.location.origin + window.location.pathname;
                 window.history.replaceState({}, document.title, newURL);
             }
+
+
 
 	</script>
 
