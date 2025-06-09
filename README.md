@@ -33,7 +33,7 @@ Repository Status: The repository currently has 1 star, 0 forks, a total of 8 co
 ## 程式介紹
 ### 登入系統
 1. **驗證是否有收到帳號與密碼**
-```
+```ruby
 If(!isset($_POST['id']) || !isset($_POST['key'])) {
   echo "invalid input";
   exit();
@@ -42,14 +42,14 @@ If(!isset($_POST['id']) || !isset($_POST['key'])) {
 * 檢查是否有收到 ''POST'' 的 ''id''（帳號）和 ''key''（密碼），如果沒有就中止程式。
 
 2. **開啟 session 並取出輸入資料**
-```
+```ruby
 session_start();
 $id = $_POST['id'];
 $key = $_POST['key'];
 ```
 
 3. **驗證是否為合法英數字**
-```
+```ruby
 $pattern="/[^a-zA-Z0-9]+/";
 if(preg_match($pattern, $id) || preg_match($pattern, $key)) {
   header("Location: login.html?msg=not allowed input");
@@ -58,19 +58,19 @@ if(preg_match($pattern, $id) || preg_match($pattern, $key)) {
 ```
 
 4. **連接資料庫並查詢帳號密碼**
-```
+```ruby
 $mysqli = new mysqli("localhost","root","121314","phpmyadmin");
 $sql_str = "SELECT * FROM player WHERE `player_id`='" . $id . "' AND `player_password`='" . $key . "'";
 ```
 
 5. **確認查詢結果**
-```
+```ruby
 $row = $result->fetch_array();
 ...
 ```
 
 6. **帳密檢查與錯誤處理**
-```
+```ruby
 if(!($id==$db_id && $key==$db_key)) {
   header("Location: login.html?message=" . urlencode("登入失敗，請再試一次"));
   exit();
@@ -79,7 +79,7 @@ if(!($id==$db_id && $key==$db_key)) {
 * 如果資料庫找不到，或密碼錯誤，就導回登入頁。
 
 7. **Redis Token 建立**
-```
+```ruby
 $redis = new Redis();
 $redis->connect('127.0.0.1', 6379);
 $id_cache = $redis->get($db_id);
@@ -97,7 +97,7 @@ $redis->quit;
 * Redis 是用來儲存登入 Token，用戶只要有 token 就算登入成功。
 
 8. **儲存資料進 PHP session**
-```
+```ruby
 $_SESSION['player_name'] = $db_nick;
 $_SESSION['player_id'] = $db_id;
 $_SESSION['player_stone'] = $db_stone;
@@ -108,7 +108,7 @@ $_SESSION['player_money'] = $db_money;
    
 ### 註冊系統
 1. **接收表單**
-```
+```ruby
 $player_id = $_POST['player_id'] ?? '';
 $player_name = $_POST['player_name'] ?? '';
 $player_password = $_POST['player_password'] ?? '';
@@ -117,7 +117,7 @@ $player_password = $_POST['player_password'] ?? '';
 * 如果沒有值就預設為空字串（``?? ''``是 null 合併運算子）。
  
 2. **驗證是否包含非英數字元**
-```
+```ruby
 $pattern="/[^a-zA-Z0-9]+/";
 if(preg_match($pattern, $player_id) || preg_match($pattern, $player_name)||preg_match($pattern, $player_password)) {
   header("Location: sign_up.html?msg=not allowed input");
@@ -129,7 +129,7 @@ if(preg_match($pattern, $player_id) || preg_match($pattern, $player_name)||preg_
 * 若有違規，將導向 ``sign_up.html`` 並傳送錯誤訊息 ``?msg=not allowed input``。
  
 3. **連接資料庫**
-```
+```ruby
 $host = "localhost";
 $dbname = "final_gacha";
 $user = "zhouu";
@@ -139,7 +139,7 @@ $pdo = new PDO(...);
 * 使用 PDO 連線至名為 ``final_gacha`` 的 MySQL 資料庫。
  
 4. **寫入新玩家資料**
-```
+```ruby
 $stmt = $pdo->prepare("INSERT INTO player (player_id, player_name, player_password,gacha_stone,player_money) VALUES (?, ?, ?, 100, 1000)");
 $stmt->execute([$player_id, $player_name, $player_password]);
 ```
@@ -147,13 +147,13 @@ $stmt->execute([$player_id, $player_name, $player_password]);
   
   
 5. **註冊成功 → 導向 login.html**
-```
+```ruby
   header("Location: login.html?msg=Registration Successful");
   exit();
 ```
 
 6. **錯誤處理（主鍵衝突、名稱重複）**
-```
+```ruby
   if ($e->getCode() == 23000) {
         // 23000: 重複主鍵或唯一鍵違反（如 player_id 重複）
         $errorMsg = $e->getMessage();
