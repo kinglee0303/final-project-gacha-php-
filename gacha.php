@@ -7,8 +7,9 @@
 
 ?>
 <!DOCTYPE html>
-<html>
+<html> 
   <head>
+  <title>轉蛋頁面</title>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
@@ -31,7 +32,7 @@
 	  }
 	.center-wrapper {
 	  margin-top: 5vh;
-          margin-left: 0vh;	
+	  margin-left: 0vh;
 	  display: flex;
 	  justify-content: center;   /* 水平置中 */
 	  align-items: center;       /* 垂直置中 */
@@ -170,8 +171,8 @@
 	    </div>
 	    <div class="inf">
 	    	<div class="sec-bar">
-	       		<h1 class="stone">&nbsp;&nbsp;&nbsp;&nbsp;抽卡石：<?= htmlspecialchars($stone); ?></h1>
-	       		<h1 class="money">&nbsp;&nbsp;&nbsp;&nbsp;金幣：<?= htmlspecialchars($money); ?></h1>
+	       		<h1 class="stone">&nbsp;&nbsp;&nbsp;&nbsp;🪨抽卡石：<?= htmlspecialchars($stone); ?></h1>
+	       		<h1 class="money">&nbsp;&nbsp;&nbsp;&nbsp;💰金幣：<?= htmlspecialchars($money); ?></h1>
 			<br>
 			<form action="role_backpack.php" method="post">
                                 <button class="bag-button" type="submit"> 角色背包 </button>
@@ -182,7 +183,7 @@
                          </form>
                         <br><br>
                         <form action="store.php" method="post">
-                                <button class="store-button" type="submit">STORE</button>
+                                <button class="store-button" type="submit">商城</button>
                          </form>
 
 	    	</div>
