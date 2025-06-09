@@ -183,6 +183,129 @@ $stmt->execute([$player_id, $player_name, $player_password]);
   * ``?msg=duplicate_name``
 
 ### 抽卡系統
+#### 單抽
+1. **登入驗證**
+```ruby
+session_start();
+
+if (!isset($_SESSION['player_id'])) {
+```
+* 檢查玩家是否登入。若未登入（``$_SESSION['player_id']`` 沒有設定），就結束程式並回傳錯誤訊息。
+
+2. **資料庫連線**
+```ruby
+$servername = "localhost";
+$username = "root";
+$password = "121314";
+$dbname = "phpmyadmin";
+$conn = new mysqli($servername, $username, $password, $dbname);
+```
+* 這裡連接到本地 MySQL 資料庫，帳號是 root，密碼為 121314，使用的資料庫為 phpmyadmin。
+
+3. **檢查抽卡石與保底次數**
+```ruby
+   $sql = "SELECT gacha_stone , gacha_counter FROM player WHERE player_id = ?";
+```
+* 這裡從 ``player`` 表中取得當前玩家剩下的：
+
+  * ``gacha_stone``：抽卡石數量
+
+  * ``gacha_counter``：距離保底的剩餘次數
+    
+4. **沒有抽卡石就不能抽**
+```ruby
+   if ($gacha_stone <= 0) {
+```
+* 如果抽卡石為 0，則禁止抽卡並回傳錯誤。
+
+5. **抽卡石扣除 1 顆**
+```ruby
+   $sql = "UPDATE player SET gacha_stone = gacha_stone - 1 WHERE player_id = ?";
+```
+* 從資料庫中將抽卡石減少 1。
+  
+6. **抽卡池建構**
+```ruby
+   $sql = "SELECT role_id, role_name, role_weight, star FROM role";
+```
+* 從 ``role`` 表中取得所有角色的：
+
+  * ``role_id``：角色編號
+
+  * ``role_name``：角色名稱
+
+  * ``role_weight``：抽中機率權重
+
+  * ``star``：星級（1~5星）
+
+* 使用 ``role_weight`` 建立隨機抽卡的「加權隨機」邏輯。
+
+#### 十抽
+```ruby
+while(--$while_num){
+    ...
+}
+```
+添加``while``進入 10 抽迴圈
+> [!NOTE]
+> 是從 9 次開始，最後 1 抽可保底。
+
+7. **抽卡邏輯**
+```ruby
+   $is_guaranteed = ($gacha_counter <= 1);
+```
+* 如果 gacha_counter <= 1，表示下一抽必出 5 星（保底觸發）。
+
+* 否則執行加權隨機選角。
+```ruby
+if ($is_guaranteed) {
+    // 找出第一個 5 星角色
+} else {
+    // 用 mt_rand 和 role_weight 做機率抽卡
+}
+```
+8. **更新保底計數器**
+```ruby
+   if ($selected_star == $max_star) {
+    $gacha_counter = 40; // 抽中5星，保底次數重置
+} else {
+    $gacha_counter--; // 未中5星，保底次數 -1
+}
+```
+9. **更新玩家角色背包**
+```ruby
+    // 檢查玩家是否已擁有該角色
+$sql = "SELECT * FROM player_role WHERE player_id = ? AND role_id = ?";
+```
+* 如果沒擁有，則新增角色。
+
+* 如果已有，則 ``quantity`` 數量 +1（重複抽到會堆疊）。
+
+10. **更新玩家保底計數**
+```ruby
+$sql = "UPDATE player SET gacha_counter = ? WHERE player_id = ?";
+```
+* 將最新的 ``gacha_counter`` 更新回 ``player`` 表中。
+
+11. **回傳抽卡結果**
+```ruby
+$response = [
+    'success' => true,
+    ...
+];
+```
+* 會包含以下資訊：
+
+  * 抽到哪一張卡（``selected_name``, ``selected_star``）
+
+  * 抽卡石扣除前後
+
+  * 保底倒數還剩幾抽
+
+  * 是否是保底抽中
+
+  * 抽到的角色是否重複
+  
 ### 商城系統
 1. **使用者驗證**
 ```ruby
