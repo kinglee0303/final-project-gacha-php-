@@ -39,7 +39,9 @@ if (isset($_POST['recharge'])) {
 
 // 抽卡石兌換
 if (isset($_POST['exchange'])) {
+     $amount = isset($_POST['exchange_amount']) ? intval($_POST['exchange_amount']) : 0;
     $exchange_cost = 150;
+    $total_cost = $exchange_cost * $amount;
     $sql = "SELECT player_money FROM player WHERE player_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $player_id);
@@ -48,15 +50,15 @@ if (isset($_POST['exchange'])) {
     $stmt->fetch();
     $stmt->close();
 
-    if ($money >= $exchange_cost) {
-        $sql = "UPDATE player SET player_money = player_money - ?, gacha_stone = gacha_stone + 1 WHERE player_id = ?";
+    if ($money >= $total_cost) {
+        $sql = "UPDATE player SET player_money = player_money - ?, gacha_stone = gacha_stone + ?  WHERE player_id = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("is", $exchange_cost, $player_id);
+        $stmt->bind_param("iis", $total_cost, $amount,$player_id);
         $stmt->execute();
         $stmt->close();
-        $message = "兌換成功！";
+        $message = "兌換成功！共花費金幣：".$total_cost.",得到".$amount."顆抽卡石。";
     } else {
-        $message = "金幣不足，無法兌換抽卡石。";
+        $message = "金幣不足, 無法兌換抽卡石。";
     }
 }
 
@@ -124,11 +126,11 @@ while ($row = $result->fetch_assoc()) {
 }
 $conn->close();
 
-if(strpos($message, '成功儲值') === 0||$message==='購買成功！'||$message==='金幣不足，無法兌換抽卡石。'||$message==='金幣不足，無法購買該道具。')
+if(strpos($message, '成功儲值') === 0||$message==='購買成功！'||$message==='金幣不足, 無法兌換抽卡石。'||$message==='金幣不足，無法購買該道具。')
 {
  $t_message="目前金幣餘額： ".$money;
 }
-else if($message==='兌換成功！')
+else if(strpos($message, '兌換成功') === 0)
 {
  $t_message="目前金幣餘額： ".$money.", 目前抽卡石餘額: ".$stone;
 }
@@ -146,7 +148,7 @@ $_SESSION['t_message']=$t_message;
 
     <title>商城頁面</title>
     <style>
-        .balance {
+    .balance {
             margin: 0;
             font-weight: bold;
 	    font-size: 30px;
@@ -345,7 +347,9 @@ $_SESSION['t_message']=$t_message;
 	}
 
 	.swal-popup {
-	  font-size: 18px; /* 整體字體大小 */
+	  font-size: 18px; /* 整體字體大小 */  
+	  width: auto !important;
+  	  max-width: none !important;
 	}
 
 	.swal-title {
@@ -388,8 +392,13 @@ $_SESSION['t_message']=$t_message;
 				<hr style="height:2px;border-width:0;color:gray;background-color:gray; margin: 0 0 25px 0;">
 			     <form method="post">
 				    <h1 class="money h1">🪨 兌換抽卡石 🪨</h1>
-				    <label class="money label">花費150金幣兌換1顆抽卡石：</label>
-			            <button class="money button" type="submit" name="exchange">兌換</button>
+				    <!--<label class="money label">花費150金幣兌換1顆抽卡石：</label>
+			            <button class="money button" type="submit" name="exchange">兌換</button>-->
+				    
+				    <label class="money label">花費150金幣可兌換1顆抽卡石</label><br>
+				    <label class="money label">兌換數量：</label>
+				    <input class="money input" type="number" name="exchange_amount" min="1" value="1" required>
+				    <button class="money button" type="submit" name="exchange">兌換</button>
 			     </form>
 			     <br>
 			</div>
@@ -429,7 +438,7 @@ $_SESSION['t_message']=$t_message;
 	    <script>
 	        const message = <?php echo json_encode($_SESSION['message'], JSON_UNESCAPED_UNICODE); ?>;
 	 	const t_message = <?php echo json_encode($_SESSION['t_message'], JSON_UNESCAPED_UNICODE); ?>;
-	        if(message.startsWith('成功儲值')||message==='購買成功！'||message==='兌換成功！')
+	        if(message.startsWith('成功儲值')||message==='購買成功！'||message.startsWith('兌換成功！'))
 		{
 		      Swal.fire({
 	               icon: 'success',
@@ -447,7 +456,7 @@ $_SESSION['t_message']=$t_message;
 
 
 		}
-		else if(message==='金幣不足，無法兌換抽卡石。'||message==='金幣不足，無法購買該道具。')
+		else if(message==='金幣不足, 無法兌換抽卡石。'||message==='金幣不足，無法購買該道具。')
 		{
        	             Swal.fire({
 	               icon: 'error',
