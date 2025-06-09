@@ -184,3 +184,80 @@ $stmt->execute([$player_id, $player_name, $player_password]);
 
 ### 抽卡系統
 ### 商城系統
+1. **使用者驗證**
+```ruby
+session_start();
+if (!isset($_SESSION['player_id'])) {
+    echo "請先登入！";
+    exit;
+}
+```
+* 這段會檢查是否登入，若沒登入，直接提示「請先登入！」並終止程式。
+
+2. **金幣儲值功能**
+```
+if (isset($_POST['recharge'])) {
+    $amount = intval($_POST['money']);
+    $sql = "UPDATE player SET player_money = player_money + ? WHERE player_id = ?";
+    ...
+}
+```
+* 用戶可以輸入儲值金額（例如：160），然後點擊「儲值」按鈕。
+
+* 該金額會直接加到 ``player`` 表中的 ``player_money`` 欄位。
+3. **兌換抽卡石功能**
+```ruby
+if (isset($_POST['exchange'])) {
+    $exchange_cost = 160;
+    ...
+    if ($money >= $exchange_cost) {
+        $sql = "UPDATE player SET player_money = player_money - ?, gacha_stone = gacha_stone + 1 WHERE player_id = ?";
+        ...
+    }
+}
+```
+* 玩家可以使用 160 金幣兌換 1 顆抽卡石。
+
+* 若金幣不足，會顯示錯誤訊息。
+4. **購買商城道具功能**
+```ruby
+  if (isset($_POST['buy_tool'])) {
+    $tool_id = intval($_POST['tool_id']);
+    ...
+}
+```
+* 透過 ``<select>`` 下拉式選單選擇道具。
+* 系統會：
+ * 先查金幣是否足夠；
+
+* 如果足夠：
+
+ * 扣除金幣
+
+ * 將道具加進 ``player_tool`` 表格中，並用 ``ON DUPLICATE KEY UPDATE`` 機制增加數量。
+
+5. **道具價格與列表**
+```ruby
+$tool_prices = [
+    1 => 50, 2 => 80, 3 => 100, 4 => 120, 5 => 200, 6 => 160, 7 => 300
+];
+```
+每個道具有固定價格（以 ``tool_id`` 為鍵），並對應 ``tool`` 資料表中定義的 ``tool_id`` 和 ``tool_name``。
+
+6. **畫面顯示**
+```ruby
+<div class="balance">
+    💰 金幣: <?= $money ?> | 🪨 抽卡石: <?= $stone ?>
+</div>
+```
+* 顯示目前玩家的金幣與抽卡石數量。
+
+* 下方的表單提供三種操作介面：
+ * 儲值金幣
+ * 抽卡石兌換
+ * 道具購買（從資料庫中取道具名稱）
+7. **使用成功訊息**
+```ruby
+   <?php if (!empty($message)) echo "<p>$message</p>"; ?>
+```
+* 成功或錯誤操作都會以文字顯示訊息，如：「購買成功」、「金幣不足」。
