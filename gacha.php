@@ -7,9 +7,10 @@
 
 ?>
 <!DOCTYPE html>
-<html> 
+<html>
   <head>
   <title>轉蛋頁面</title>
+
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
@@ -161,6 +162,17 @@
 	  .gacha-container form {
 	    margin: 0;
 	  }
+	.swal-popup {
+          font-size: 18px; /* 整體字體大小 */
+        }
+
+        .swal-title {
+          font-size: 33px; /* 標題字體大小 */
+        }
+
+        .swal-text {
+          font-size: 25px; /* 這就是 text 的字體大小 */
+        }
   </style>
   </head>
   <body>
@@ -265,7 +277,10 @@
             confirmButtonText: '確認',
             width: '600px',
 	    customClass: {
-	    	confirmButton: 'my-confirm-button'
+	    	confirmButton: 'my-confirm-button',
+		popup: 'swal-popup',
+                title: 'swal-title',
+                htmlContainer: 'swal-text'
 	    }
         }).then(() => {
 	    location.reload(); // 按下確認後刷新頁面
