@@ -164,6 +164,9 @@
 	  }
 	.swal-popup {
           font-size: 18px; /* 整體字體大小 */
+	  width: auto !important;
+          max-width: none;
+
         }
 
         .swal-title {
@@ -173,6 +176,11 @@
         .swal-text {
           font-size: 25px; /* 這就是 text 的字體大小 */
         }
+        .swal-auto-size {
+	  width: 40vw !important;        /* 寬度為視窗寬度的 90% */
+	  max-width: none !important;
+	  padding: 20px;
+	}
   </style>
   </head>
   <body>
@@ -224,6 +232,30 @@
 		   </div>
 		</div>
 	   </div>
+<script>
+         window.onload = function () {
+            const inputs = document.querySelectorAll('input[type="text"], input[type="password"]');
+            inputs.forEach(input => input.value = '');
+          };
+         const urlParams = new URLSearchParams(window.location.search);
+
+            if (urlParams.get('msg') === 'no stone') {
+              Swal.fire({
+               icon: 'error',
+               title: '抽卡失敗,抽卡石不足！',
+               text: '目前抽卡石餘額：<?= htmlspecialchars($stone); ?> , 請去商城兌換足夠的抽卡石。',
+               confirmButtonText: '好',
+                  customClass: {
+                            popup: 'swal-popup',
+                            title: 'swal-title',
+                            htmlContainer: 'swal-text'
+                          }
+              });
+                const newURL = window.location.origin + window.location.pathname;
+                window.history.replaceState({}, document.title, newURL);
+            }
+
+</script>
 <?php if (isset($_SESSION['gacha_result'])): ?>
     <script>
         const result = <?php echo json_encode($_SESSION['gacha_result'], JSON_UNESCAPED_UNICODE); ?>;
@@ -296,7 +328,7 @@
     <script>
 	const roles = <?php echo json_encode($_SESSION['player_role'], JSON_UNESCAPED_UNICODE); ?>;
 	let titleHTML = `<h1 style="border-collapse: collapse; width: 100%; text-align: center;">我的角色背包</h1>`
-	let tableHTML = `<table border="1" style="border-collapse: collapse; width: 100%; text-align: center;">
+	let tableHTML = `<table border="1" style="font-size: 25px;border-collapse: collapse; width: 100%; text-align: center;">
 	  <thead>
 	    <tr>
 	      <th>角色ID</th>
@@ -324,7 +356,7 @@
     <script>
         const tools = <?php echo json_encode($_SESSION['player_tool'], JSON_UNESCAPED_UNICODE); ?>;
 	let titleHTML = `<h1 style="border-collapse: collapse; width: 100%; text-align: center;">我的道具背包</h1>`
-        let tableHTML = `<table border="1" style="border-collapse: collapse; width: 100%; text-align: center;">
+        let tableHTML = `<table border="1" style="font-size: 25px;border-collapse: collapse; width: 100%; text-align: center;">
           <thead>
             <tr>
               <th>道具ID</th>
@@ -350,12 +382,12 @@
     <script>
         const roles = <?php echo json_encode($_SESSION['role_all'], JSON_UNESCAPED_UNICODE); ?>;
         let titleHTML = `<h1 style="border-collapse: collapse; width: 100%; text-align: center;">抽卡圖鑑</h1>`
-        let tableHTML = `<table border="1" style="border-collapse: collapse; width: 100%; text-align: center;">
+        let tableHTML = `<table border="1" style="font-size: 25px; border-collapse: collapse; width: 100%; text-align: center;">
           <thead>
             <tr>
-              <th>角色ID</th>
-              <th>角色名稱</th>
-	      <th>星級</th>
+              <th> 角色ID </th>
+              <th> 角色名稱 </th>
+	      <th> 星級 </th>
               <th>抽中機率</th>
             </tr>
           </thead>
@@ -365,14 +397,17 @@
 
           tableHTML += `
             <tr>
-              <td>${role.role_id}</td>
-              <td>${role.role_name}</td>
-              <td>${role.star}</td>
+              <td> ${role.role_id} </td>
+              <td> ${role.role_name} </td>
+              <td> ${role.star} </td>
 	      <td>${role.role_weight}/152（約 ${percent}%）</td>
             </tr>`;
         });
         tableHTML += `</tbody></table>`;
-        Swal.fire({ html: titleHTML+tableHTML })
+        Swal.fire({ html: titleHTML+tableHTML,
+	  customClass: {
+	    popup: 'swal-auto-size'
+	  } })
     </script>
      <?php unset($_SESSION['role_all']); ?>
 <?php endif; ?>
