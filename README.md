@@ -17,14 +17,95 @@ Repository Status: The repository currently has 1 star, 0 forks, a total of 8 co
 ![](https://i.meee.com.tw/pV62gYo.png)<br>
 * `抽卡圖鑑`可以查看角色抽中的機率，公開透明為原則<br>
 ![](https://i.meee.com.tw/2IkVWp6.png)<br>
+
+> [!TIP]
+> 40抽保底一次UR<br>
+
 * 點擊`道具背包`即可查看道具內容<br>
-  其中抽卡石🪨是用來抽卡的，金幣🪙則是到商城兌換成抽卡石<br>
 ![](https://i.meee.com.tw/N8bOwhs.png)<br>
+
+> [!NOTE]
+> 抽卡石🪨是用來抽卡的，金幣🪙則是到商城兌換成抽卡石<br>
+
 * 點擊`角色背包`即可查看抽到的角色<br>
 ![](https://i.meee.com.tw/iopvaXX.png)<br>
 
 ## 程式介紹
 ### 登入系統
+1. **驗證是否有收到帳號與密碼**
+```
+If(!isset($_POST['id']) || !isset($_POST['key'])) {
+  echo "invalid input";
+  exit();
+}
+```
+* 檢查是否有收到 ''POST'' 的 ''id''（帳號）和 ''key''（密碼），如果沒有就中止程式。
+
+2. **開啟 session 並取出輸入資料**
+```
+session_start();
+$id = $_POST['id'];
+$key = $_POST['key'];
+```
+
+3. **驗證是否為合法英數字**
+```
+$pattern="/[^a-zA-Z0-9]+/";
+if(preg_match($pattern, $id) || preg_match($pattern, $key)) {
+  header("Location: login.html?msg=not allowed input");
+  exit();
+}
+```
+
+4. **連接資料庫並查詢帳號密碼**
+```
+$mysqli = new mysqli("localhost","root","121314","phpmyadmin");
+$sql_str = "SELECT * FROM player WHERE `player_id`='" . $id . "' AND `player_password`='" . $key . "'";
+```
+
+5. **確認查詢結果**
+```
+$row = $result->fetch_array();
+...
+```
+
+6. **帳密檢查與錯誤處理**
+```
+if(!($id==$db_id && $key==$db_key)) {
+  header("Location: login.html?message=" . urlencode("登入失敗，請再試一次"));
+  exit();
+}
+```
+* 如果資料庫找不到，或密碼錯誤，就導回登入頁。
+
+7. **Redis Token 建立**
+```
+$redis = new Redis();
+$redis->connect('127.0.0.1', 6379);
+$id_cache = $redis->get($db_id);
+if(!empty($id_cache)) {
+  $redis->del($id_cache);
+}
+
+$token=md5($id . time() . floor(rand()*100000+0.5));//建立一個簡單的 token
+$redis->set($id, $token);// 用帳號儲存 token
+$redis->expire($id, 86400);// 設定過期時間 1 天
+$redis->set($token, $id);// 也用 token 對應帳號
+$redis->expire($token, 86400);
+$redis->quit;
+```
+* Redis 是用來儲存登入 Token，用戶只要有 token 就算登入成功。
+
+8. **儲存資料進 PHP session**
+```
+$_SESSION['player_name'] = $db_nick;
+$_SESSION['player_id'] = $db_id;
+$_SESSION['player_stone'] = $db_stone;
+$_SESSION['player_money'] = $db_money;
+```
+* 這樣之後進入 ``gacha.php`` 時可以直接用 ``$_SESSION`` 讀取使用者資料。
+
+   
 ### 註冊系統
 1. **接收表單**
 ```
