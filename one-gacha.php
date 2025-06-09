@@ -37,8 +37,9 @@ $gacha_stone = $row['gacha_stone'];
 $gacha_counter = $row['gacha_counter'];
 
 if ($gacha_stone <= 0) {
-    echo json_encode(['success' => false, 'message' => '抽卡石不足'], JSON_UNESCAPED_UNICODE );
-    exit;
+    //echo json_encode(['success' => false, 'message' => '抽卡石不足'], JSON_UNESCAPED_UNICODE );
+    header("Location: gacha.php?msg=no stone");
+    exit;  
 }
 
 // 扣除一顆抽卡石
