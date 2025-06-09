@@ -92,7 +92,17 @@
 	  align-items: center;       /* 垂直置中 */
 	  height: 70vh;             /* 佔滿整個視窗高度 */
 	}
+	.swal-popup {
+          font-size: 18px; /* 整體字體大小 */
+        }
 
+        .swal-title {
+          font-size: 33px; /* 標題字體大小 */
+        }
+
+        .swal-text {
+          font-size: 25px; /* 這就是 text 的字體大小 */
+        }
      </style>
     </head>
     <body>
@@ -129,6 +139,11 @@
 	       title: '註冊成功！',
 	       text: '請登入以繼續。',
 	       confirmButtonText: '好',
+		          customClass: {
+                            popup: 'swal-popup',
+                            title: 'swal-title',
+                            htmlContainer: 'swal-text'
+                          }
 	      });
 		const newURL = window.location.origin + window.location.pathname;
     		window.history.replaceState({}, document.title, newURL);
@@ -139,6 +154,11 @@
                  title: '登錄失敗！',
                  text: 'ID/Password 僅可輸入英文或數字。',
                  confirmButtonText: '好',
+		          customClass: {
+                            popup: 'swal-popup',
+                            title: 'swal-title',
+                            htmlContainer: 'swal-text'
+                          }
                });
                 const newURL = window.location.origin + window.location.pathname;
                 window.history.replaceState({}, document.title, newURL);
@@ -152,6 +172,11 @@
 	               title: '登入失敗！',
 	               text: '帳號或密碼錯誤,請重試。',
 	               confirmButtonText: '好',
+		          customClass: {
+                            popup: 'swal-popup',
+                            title: 'swal-title',
+                            htmlContainer: 'swal-text'
+                          }
 	              });
 	                const newURL = window.location.origin + window.location.pathname;
 	                window.history.replaceState({}, document.title, newURL);
