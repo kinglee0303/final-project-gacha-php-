@@ -171,8 +171,8 @@
 	    </div>
 	    <div class="inf">
 	    	<div class="sec-bar">
-	       		<h1 class="stone">&nbsp;&nbsp;&nbsp;&nbsp;🪨抽卡石：<?= htmlspecialchars($stone); ?></h1>
-	       		<h1 class="money">&nbsp;&nbsp;&nbsp;&nbsp;💰金幣：<?= htmlspecialchars($money); ?></h1>
+	       		<h1 class="stone">&nbsp;&nbsp;&nbsp;&nbsp;🪨 抽卡石：<?= htmlspecialchars($stone); ?></h1>
+	       		<h1 class="money">&nbsp;&nbsp;&nbsp;&nbsp;💰 金幣：<?= htmlspecialchars($money); ?></h1>
 			<br>
 			<form action="role_backpack.php" method="post">
                                 <button class="bag-button" type="submit"> 角色背包 </button>
