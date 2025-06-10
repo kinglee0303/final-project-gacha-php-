@@ -24,11 +24,18 @@ Repository Status: The repository currently has 1 star, 0 forks, a total of 8 co
 * 點擊`道具背包`即可查看道具內容<br>
 ![](https://i.meee.com.tw/N8bOwhs.png)<br>
 
-> [!NOTE]
-> 抽卡石🪨是用來抽卡的，金幣🪙則是到商城兌換成抽卡石<br>
-
 * 點擊`角色背包`即可查看抽到的角色<br>
 ![](https://i.meee.com.tw/iopvaXX.png)<br>
+
+* 無法抽卡時，可以到`商城`兌換所需的石頭<br>
+> [!NOTE]
+> 抽卡石🪨是用來抽卡的，金幣🪙則是用來兌換成抽卡石<br>
+> 金幣儲值僅供演示用，不會花到半毛錢<br>
+
+![](https://i.meee.com.tw/qAUwvCz.png)<br>
+* 此外，金幣還可以用來購買`回復藥水`。`回復藥水`目前暫無任何功能。
+![](https://i.meee.com.tw/uhcEU4k.png)<br>
+
 
 ## 程式介紹
 ### 登入系統
