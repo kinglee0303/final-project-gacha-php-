@@ -329,11 +329,15 @@ if (!isset($_SESSION['player_id'])) {
 if (isset($_POST['recharge'])) {
     $amount = intval($_POST['money']);
     $sql = "UPDATE player SET player_money = player_money + ? WHERE player_id = ?";
-    ...
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("is", $amount, $player_id);
+    $stmt->execute();
+    $stmt->close();
+    $message = "成功儲值 $amount 金幣！";
 }
 ```
+* 檢查是否有從表單送出一個名為 `recharge` 的 POST 請求。
 * 用戶可以輸入儲值金額（例如：160），然後點擊「儲值」按鈕。
-
 * 該金額會直接加到 ``player`` 表中的 ``player_money`` 欄位。
 3. **兌換抽卡石功能**
 ```ruby
@@ -365,29 +369,63 @@ if (isset($_POST['exchange'])) {
   * 扣除金幣
 
   * 將道具加進 ``player_tool`` 表格中，並用 ``ON DUPLICATE KEY UPDATE`` 機制增加數量。
+   
+    * 如果該玩家已有這個道具，就把數量加 1。否則插入新的一筆資料。
 
 5. **道具價格與列表**
 ```ruby
-$tool_prices = [
-    1 => 50, 2 => 80, 3 => 100, 4 => 120, 5 => 200, 6 => 160, 7 => 300
-];
-```
-每個道具有固定價格（以 ``tool_id`` 為鍵），並對應 ``tool`` 資料表中定義的 ``tool_id`` 和 ``tool_name``。
+$sql = "SELECT player_money, gacha_stone FROM player WHERE player_id = ?";
+...
+$_SESSION['player_stone'] = $stone;
+$_SESSION['player_money'] = $money;
 
-6. **畫面顯示**
-```ruby
-<div class="balance">
-    💰 金幣: <?= $money ?> | 🪨 抽卡石: <?= $stone ?>
-</div>
+$result = $conn->query("SELECT tool_id, tool_name FROM tool");
+...
 ```
-* 顯示目前玩家的金幣與抽卡石數量。
+* 將玩家餘額和商城道具讀入頁面。
 
-* 下方的表單提供三種操作介面：
-  * 儲值金幣
-  * 抽卡石兌換
-  * 道具購買（從資料庫中取道具名稱）
-7. **使用成功訊息**
+6. ** 決定提示補充訊息（t_message）**
 ```ruby
-   <?php if (!empty($message)) echo "<p>$message</p>"; ?>
+if (strpos($message, '成功儲值') === 0 || $message === '購買成功！' || ...) {
+    $t_message = "目前金幣餘額： ".$money;
+} else if (strpos($message, '兌換成功') === 0) {
+    $t_message = "目前金幣餘額： ".$money.", 目前抽卡石餘額: ".$stone;
+}
 ```
-* 成功或錯誤操作都會以文字顯示訊息，如：「購買成功」、「金幣不足」。
+* 根據操作訊息內容產出「補充提示內容」。
+
+7. **SweetAlert 前端提示（成功／錯誤）**
+```ruby
+Swal.fire({
+    icon: 'success',
+    title: message,
+    text: t_message,
+    ...
+});
+```
+* 若是儲值 / 購買 / 兌換成功，就顯示綠色提示框。
+
+* 若金幣不足，就顯示紅色錯誤提示。
+  
+8. **UI 分頁切換功能**
+```ruby
+function showTab(tabId) {
+    ...
+    document.getElementById(tabId).classList.add('active');
+}
+```
+* JS 控制兩個分頁：「儲值 / 兌換」 和 「道具購買」的切換顯示。
+
+9. **前端介面說明**
+* 使用 SweetAlert2 美化彈窗。
+
+* 背景圖使用商城主題圖。
+
+* 兩個主要 tab：
+
+  * 💰 儲值 / 兌換
+
+  * 📦 購買道具（從 DB 撈道具列表）
+
+* 選單與按鈕都設計了 `hover、active` 效果。
+
