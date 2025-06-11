@@ -314,6 +314,7 @@ $response = [
   * 抽到的角色是否重複
   
 ### 商城系統
+
 1. **使用者驗證**
 ```ruby
 session_start();
@@ -325,7 +326,7 @@ if (!isset($_SESSION['player_id'])) {
 * 這段會檢查是否登入，若沒登入，直接提示「請先登入！」並終止程式。
 
 2. **金幣儲值功能**
-```
+```ruby
 if (isset($_POST['recharge'])) {
     $amount = intval($_POST['money']);
     $sql = "UPDATE player SET player_money = player_money + ? WHERE player_id = ?";
@@ -384,7 +385,7 @@ $result = $conn->query("SELECT tool_id, tool_name FROM tool");
 ```
 * 將玩家餘額和商城道具讀入頁面。
 
-6. ** 決定提示補充訊息（t_message）**
+6. **決定提示補充訊息（t_message）**
 ```ruby
 if (strpos($message, '成功儲值') === 0 || $message === '購買成功！' || ...) {
     $t_message = "目前金幣餘額： ".$money;
@@ -428,4 +429,176 @@ function showTab(tabId) {
   * 📦 購買道具（從 DB 撈道具列表）
 
 * 選單與按鈕都設計了 `hover、active` 效果。
+### 背包系統
+#### 顯示玩家背包角色資料
+1. **Session 驗證無誤**
+```ruby
+if (!isset($_SESSION['player_id'])) {
+    echo json_encode(['success' => false, 'message' => '尚未登入'], JSON_UNESCAPED_UNICODE );
+    exit;
+}
+```
+* 如果沒有登入，就回傳錯誤訊息並結束。
+2. **資料庫連線正確處理**
+```ruby
+$conn = new mysqli(...);
+if ($conn->connect_error) {
+    die(json_encode(...));
+}
+```
+* 如果資料庫連不上，也正確輸出錯誤訊息並中止。
+3. **查詢玩家背包角色**
+```ruby
+$sql = "SELECT role_id, quantity FROM player_role WHERE player_id = ? AND owned = TRUE";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $player_id);
+$stmt->execute();
+$result_bag = $stmt->get_result();
+```
+* 用 `prepared statement` 保護資料。
 
+* 如果查不到任何角色，回傳「背包為空」。
+4. **查詢角色資訊（`role_name`, `star`）**
+```ruby
+$sql = "SELECT role_id, role_name, star FROM role";
+```
+* 取出角色名稱與星級並以`role_id`為索引存入陣列。
+5. **合併資料成角色清單**
+```ruby
+while ($row = $result_bag->fetch_assoc()) {
+    $role_id = $row['role_id'];
+    $roles[] = [
+      'role_id' => $role_id,
+      'role_name' => $roles_menu[$role_id]['role_name'],
+      'quantity' => $row['quantity'],
+      'star' => $roles_menu[$role_id]['star']
+    ];
+}
+```
+* 把「玩家擁有的角色」與「角色總表資訊」合併輸出。
+#### 查詢目前玩家的道具背包
+```ruby
+if (!isset($_SESSION['player_id'])) {
+    echo json_encode(['success' => false, 'message' => '尚未登入'], JSON_UNESCAPED_UNICODE );
+    exit;
+}
+```
+* 確認是否已登入（是否有 player_id）。
+* 若未登入，回傳 JSON 錯誤訊息並結束執行。
+```ruby
+$player_id = $_SESSION['player_id'];
+```
+* 取得登入玩家的 ID。
+```ruby
+$servername = "localhost";
+$username = "root";
+$password = "121314";
+$dbname = "phpmyadmin";
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die(json_encode(['success' => false, 'message' => '資料庫連接失敗'], JSON_UNESCAPED_UNICODE ));
+    exit;
+}
+```
+* 建立資料庫連線，如果失敗則回傳錯誤 JSON 並停止執行。
+```ruby
+$sql = "SELECT tool_id, quantity FROM player_tool WHERE player_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $player_id);
+$stmt->execute();
+$result_bag = $stmt->get_result();
+$stmt->close();
+```
+* 查詢玩家目前擁有的道具（道具 ID 和數量）。使用 `prepare` 是為了防止 SQL injection。
+```ruby
+if ($result_bag->num_rows === 0) {
+    echo json_encode(['success' => false, 'message' => '背包為空'], JSON_UNESCAPED_UNICODE );
+    exit;
+}
+```
+* 如果查不到任何資料，代表背包是空的，回傳錯誤訊息。
+```ruby
+$sql = "SELECT tool_id, tool_name FROM tool";
+$result_menu = $conn->query($sql);
+$tools_menu = [];
+while ($row = $result_menu->fetch_assoc()) {
+    $tools_menu[$row['tool_id']] = $row['tool_name'];
+}
+```
+* 查詢所有道具的名稱，建立對應表：`tool_id ➝ tool_name`。
+```ruby
+$tools = [];
+while ($row = $result_bag->fetch_assoc()) {
+    $tools[] = [
+        'tool_id' => $row['tool_id'],
+        'tool_name' => $tools_menu[$row['tool_id']],
+        'quantity' => $row['quantity']
+    ];
+}
+```
+* 整合每個道具的名稱和數量，組合成一個資料陣列 `$tools`。
+```ruby
+echo json_encode([
+    'success' => true,
+    'player_id' => $player_id,
+    'tools' => $tools
+], JSON_UNESCAPED_UNICODE );
+```
+* 將資料輸出為 JSON 格式（用於除錯或前端 AJAX 測試）。
+
+  
+### 抽卡圖鑑
+```ruby
+<?php
+session_start();
+
+if (!isset($_SESSION['player_id'])) {
+    echo json_encode(['success' => false, 'message' => '尚未登入'], JSON_UNESCAPED_UNICODE ); // 尚未登入
+    exit;
+}
+
+$player_id = $_SESSION['player_id'];
+
+// 資料庫連線設定
+$servername = "localhost";
+$username = "zhouu";  // 請依環境修改
+$password = "ispower";
+$dbname = "final_gacha";
+
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die(json_encode(['success' => false, 'message' => '資料庫連接失敗'], JSON_UNESCAPED_UNICODE )); // 如果連線失敗，就輸出 JSON 提示錯誤。
+    exit;
+}
+
+//查看所有角色
+$sql = "SELECT * FROM role";
+$result_menu = $conn->query($sql);
+
+// 將查詢結果存入陣列
+$roles_menu = [];
+while ($row = $result_menu->fetch_assoc()) {
+    $roles_menu[] = [
+	'role_id' => $row['role_id'],
+        'role_name' => $row['role_name'],
+	'role_weight' => $row['role_weight'],
+        'star' => $row['star']
+    ];
+}
+$conn->close();
+
+$_SESSION['role_all']=$roles_menu; // 將所有角色資料存到 Session，供後續頁面使用（如 gacha.php）。
+echo json_encode([ // 輸出查詢結果的 JSON 格式，方便前端 Ajax 使用。
+    'success' => true,
+    'player_id' => $player_id,
+    'roles' => $roles_menu
+], JSON_UNESCAPED_UNICODE );
+header("Location: gacha.php?msg=all_gacha_load");
+```
+* 驗證玩家是否登入。
+
+* 從資料庫撈取所有角色資訊並儲存到 `$_SESSION['role_all']`。
+
+* 回傳 JSON 格式的角色資料。
+  
