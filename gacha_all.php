@@ -12,7 +12,7 @@ $player_id = $_SESSION['player_id'];
 $servername = "localhost";
 $username = "root";  // 請依環境修改
 $password = "121314";
-$dbname = "final_gacha";
+$dbname = "phpmyadmin";
 
 
 $conn = new mysqli($servername, $username, $password, $dbname);
