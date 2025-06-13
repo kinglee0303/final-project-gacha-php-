@@ -253,7 +253,40 @@
               });
                 const newURL = window.location.origin + window.location.pathname;
                 window.history.replaceState({}, document.title, newURL);
+            }         const urlParams2 = new URLSearchParams(window.location.search);
+            if (urlParams2.get('msg') === 'role_null') {
+              Swal.fire({
+               icon: 'error',
+               title: '目前角色背包為空！',
+               text: '請抽卡',
+               confirmButtonText: '好',
+                  customClass: {
+                            popup: 'swal-popup',
+                            title: 'swal-title',
+                            htmlContainer: 'swal-text'
+                          }
+              });
+                const newURL2 = window.location.origin + window.location.pathname;
+                window.history.replaceState({}, document.title, newURL2);
             }
+         const urlParams3 = new URLSearchParams(window.location.search);
+            if (urlParams3.get('msg') === 'tool_null') {
+              Swal.fire({
+               icon: 'error',
+               title: '目前道具背包為空！',
+               text: '請去商城購買',
+               confirmButtonText: '好',
+                  customClass: {
+                            popup: 'swal-popup',
+                            title: 'swal-title',
+                            htmlContainer: 'swal-text'
+                          }
+              });
+                const newURL3 = window.location.origin + window.location.pathname;
+                window.history.replaceState({}, document.title, newURL3);
+            }
+
+	
 
 </script>
 <?php if (isset($_SESSION['gacha_result'])): ?>
