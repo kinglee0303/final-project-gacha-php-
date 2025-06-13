@@ -16,9 +16,9 @@ $tool_prices = [
     7 => 300   // 神秘寶箱
 ];
 $servername = "localhost";
-$username = "zhouu";
-$password = "ispower";
-$dbname = "final_gacha";
+$username = "root";
+$password = "121314";
+$dbname = "phpmyadmin";
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("連接失敗: " . $conn->connect_error);
