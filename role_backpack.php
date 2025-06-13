@@ -28,7 +28,8 @@ $stmt->execute();
 $result_bag = $stmt->get_result();// 取得查詢結果物件
 $stmt->close();
 if ($result_bag->num_rows === 0) {// 如果找不到任何資料（表示資料庫中沒有這個 player_id）
-    echo json_encode(['success' => false, 'message' => '背包為空'], JSON_UNESCAPED_UNICODE );
+    header("Location: gacha.php?msg=role_null");
+    //echo json_encode(['success' => false, 'message' => '背包為空'], JSON_UNESCAPED_UNICODE );
     exit;
 }
 $stmt->close();
