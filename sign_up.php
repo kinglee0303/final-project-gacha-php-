@@ -14,9 +14,9 @@ if(preg_match($pattern, $player_id) || preg_match($pattern, $player_name)||preg_
 
 // 資料庫連線
 $host = "localhost";
-$dbname = "final_gacha";
-$user = "zhouu";
-$pass = "ispower";
+$dbname = "phpmyadmin";
+$user = "root";
+$pass = "121314";
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
