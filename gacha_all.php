@@ -10,8 +10,8 @@ $player_id = $_SESSION['player_id'];
 
 // 資料庫連線設定
 $servername = "localhost";
-$username = "zhouu";  // 請依環境修改
-$password = "ispower";
+$username = "root";  // 請依環境修改
+$password = "121314";
 $dbname = "final_gacha";
 
 
